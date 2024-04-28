@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GPS Location</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css"
+  />
+  <style>
+    /* Style the map container */
+    #map {
+      height: 400px;
+    }
+  </style>
+</head>
+<body>
+  <h1>GPS Location</h1>
+  <h2>Tugas Kuliah</h2>
+  <table>
+    <tr>
+        <td>Nama MK: </td>
+        <td>Kartografi dan Geospasial</td>
+    </tr>
+    <tr>
+        <td>Prodi: </td>
+        <td>D4 SIKC</td>
+    </tr>
+    <tr>
+        <td>Kampus: </td>
+        <td>Politeknik Negeri Banjarmasin</td>
+    </tr>
+    <tr>
+        <td>Dosen: </td>
+        <td>Agus SBN</td>
+    </tr>
+    <tr>
+        <td>Nama: </td>
+        <td>Novita Dwi Ariyanti</td>
+    </tr>
+    <tr>
+        <td>NIM: </td>
+        <td>C050422014</td>
+    </tr>
+    <tr>
+        <td>Kelas: </td>
+        <td>SIKC 4A</td>
+    </tr>
+    <tr>
+        <td>Tanggal: </td>
+        <td>23 April 2024</td>
+    </tr>
+  </table>
+  <button onclick="getLocation()">Get Location</button>
+  <p id="demo"></p>
+  <p id="address"></p>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    var x = document.getElementById("demo");
+    var address = document.getElementById("address");
+
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+      } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+      }
+    }
+
+    function showPosition(position) {
+      var latitude = position.coords.latitude;
+      var longitude = position.coords.longitude;
+
+      x.innerHTML = "Latitude: " + latitude + "<br>Longitude: " + longitude;
+
+      // Reverse Geocoding using OpenStreetMap Nominatim API
+      var url = "https://nominatim.openstreetmap.org/reverse?format=json&lat=" + latitude + "&lon=" + longitude;
+      
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          address.innerHTML = "Address: " + data.display_name;
+
+          // Show map
+          showMap(latitude, longitude);
+        })
+        .catch(error => {
+          address.innerHTML = "Error fetching address: " + error;
+        });
+    }
+
+    function showError(error) {
+      switch(error.code) {
+        case error.PERMISSION_DENIED:
+          x.innerHTML = "User denied the request for Geolocation."
+          break;
+        case error.POSITION_UNAVAILABLE:
+          x.innerHTML = "Location information is unavailable."
+          break;
+        case error.TIMEOUT:
+          x.innerHTML = "The request to get user location timed out."
+          break;
+        case error.UNKNOWN_ERROR:
+          x.innerHTML = "An unknown error occurred."
+          break;
+      }
+    }
+
+    function showMap(latitude, longitude) {
+      var map = L.map('map').setView([latitude, longitude], 15);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+      }).addTo(map);
+
+      var marker = L.marker([latitude, longitude]).addTo(map);
+      marker.bindPopup('Your Location').openPopup();
+    }
+  </script>
+</body>
+</html>
