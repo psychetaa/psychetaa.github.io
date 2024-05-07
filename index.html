@@ -10,50 +10,122 @@
     /* Style the map container */
     #map {
       height: 400px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      margin-bottom: 20px;
     }
+
+    /* Style the container */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Style the table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #0b0a0b;
+    }
+
+    th {
+      background-color: #a38bdb;
+      font-weight: bold;
+    }
+     /* Additional CSS */
+     body {
+      font-family: 'Times New Roman', Times, serif;
+      background-color: #000000;
+      margin: 0;
+      padding: 20px;
+    }
+
+
+    /* Style the button */
+    button {
+      background-color: #a38bdb;
+      color: rgb(0, 0, 0);
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #a38bdb;
+    }
+
+    /* Style the paragraph elements */
+    p {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    /* Style the heading elements */
+    h1, h2 {
+      color: #0a0a0a;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
   </style>
 </head>
 <body>
-  <h1>GPS Location</h1>
-  <h2>Tugas Kuliah</h2>
-  <table>
-    <tr>
-        <td>Nama MK: </td>
+  <div class="container">
+    <h1>GPS Location</h1>
+    
+    <h2>Tugas Kuliah</h2>
+    <table>
+      <tr>
+        <th>Nama MK </th>
         <td>Kartografi dan Geospasial</td>
-    </tr>
-    <tr>
-        <td>Prodi: </td>
+      </tr>
+      <tr>
+        <th>Prodi </th>
         <td>D4 SIKC</td>
-    </tr>
-    <tr>
-        <td>Kampus: </td>
+      </tr>
+      <tr>
+        <th>Kampus </th>
         <td>Politeknik Negeri Banjarmasin</td>
-    </tr>
-    <tr>
-        <td>Dosen: </td>
+      </tr>
+      <tr>
+        <th>Dosen Pengampu </th>
         <td>Agus SBN</td>
-    </tr>
-    <tr>
-        <td>Nama: </td>
+      </tr>
+      <tr>
+        <th>Nama </th>
         <td>Novita Dwi Ariyanti</td>
-    </tr>
-    <tr>
-        <td>NIM: </td>
+      </tr>
+      <tr>
+        <th>NIM </th>
         <td>C050422014</td>
-    </tr>
-    <tr>
-        <td>Kelas: </td>
+      </tr>
+      <tr>
+        <th>Kelas </th>
         <td>SIKC 4A</td>
-    </tr>
-    <tr>
-        <td>Tanggal: </td>
-        <td>23 April 2024</td>
-    </tr>
-  </table>
-  <button onclick="getLocation()">Get Location</button>
-  <p id="demo"></p>
-  <p id="address"></p>
-  <div id="map"></div>
+      </tr>
+      <tr>
+        <th>Tanggal </th>
+        <td id="tanggal"></td>
+      </tr>
+    </table>
+    <button onclick="getLocation()">Get Location Info</button>
+    <p id="demo"></p>
+    <p id="address"></p>
+    <p id="coordinates"></p>
+    <div id="map"></div>
+  </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
@@ -68,11 +140,29 @@
       }
     }
 
+    document.getElementById("tanggal").innerText = "  " + getCurrentDate();
+
+    function getCurrentDate() {
+        var currentDate = new Date();
+        var day = currentDate.getDate();
+        var monthIndex = currentDate.getMonth();
+        var year = currentDate.getFullYear();
+
+        var monthNames = [
+            "Januari", "Februari", "Maret",
+            "April", "Mei", "Juni", "Juli",
+            "Agustus", "September", "Oktober",
+            "November", "Desember"
+        ];
+
+        return day + ' ' + monthNames[monthIndex] + ' ' + year;
+    }
+
     function showPosition(position) {
       var latitude = position.coords.latitude;
       var longitude = position.coords.longitude;
 
-      x.innerHTML = "Latitude: " + latitude + "<br>Longitude: " + longitude;
+      document.getElementById("coordinates").innerHTML = "Latitude: " + latitude + "<br>Longitude: " + longitude;
 
       // Reverse Geocoding using OpenStreetMap Nominatim API
       var url = "https://nominatim.openstreetmap.org/reverse?format=json&lat=" + latitude + "&lon=" + longitude;
@@ -115,7 +205,7 @@
       }).addTo(map);
 
       var marker = L.marker([latitude, longitude]).addTo(map);
-      marker.bindPopup('Your Location').openPopup();
+      marker.bindPopup('Your Are Currently Here').openPopup();
     }
   </script>
 </body>
